@@ -1,0 +1,48 @@
+h#include <SoftwareSerial.h> // SoftwareSerial(RX, TX)
+#include <DHT11.h>    //온습도 라이브러리 불러옴
+int temppin = A2;          //온습도 핀이 연결된 아두이노의 핀번호
+DHT11 dht11(temppin);
+int gassensor = A3;
+int gas_value;
+SoftwareSerial BTSerial(0, 1); //기존에 2,3
+int cj = 0;
+float ddong = 0;
+float humi, temp;
+
+void setup() {
+  // put your setup code here, to run once:
+
+  Serial.begin(115200);
+  BTSerial.begin(115200);
+  Serial.println("Hello");
+  BTSerial.println("Hi");
+
+
+}
+
+void loop() {
+  //cj = cj + 1;
+ // Serial.print("Serial :  ");
+  //Serial.println(cj);
+  //BTSerial.print("BT :  ");
+  //BTSerial.println(cj);
+  analogWrite(A3,255);
+  ddong = analogRead(A3);
+  dht11.read(humi, temp);
+  Serial.println(ddong);
+  Serial.println(humi, temp);
+  BTSerial.println(ddong);
+  BTSerial.println(humi, temp);
+
+
+
+  if (BTSerial.available()) {
+    Serial.write(BTSerial.read());
+  }
+  // Serial –> Data –> BT
+  if (Serial.available()) {
+    BTSerial.write(Serial.read());
+  }
+
+  //delay(300);
+}

@@ -1,0 +1,24 @@
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  float volt;
+  int sensorValue = analogRead(A2);
+  volt=(float)sensorValue/1024*5.0;
+  Serial.println(volt,4);
+  delay(500);
+  
+ /* for(int x=0; x<=100; x++)
+  {
+    sensorValue = sensorValue + analogRead(A2);
+  }
+  */
+  /*
+  sensorValue = sensorValue/100;
+  sensor_volt = sensorValue/1024*5.0;
+  Serial.print("sensor_volt=");
+  Serial.print(sensor_volt);
+  Serial.println("V");
+  delay(1000);*/
+}

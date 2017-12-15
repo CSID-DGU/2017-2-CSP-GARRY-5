@@ -1,0 +1,61 @@
+//우노버젼
+/*
+float gassensor = A3;
+float ddong,ddong2; //똥값
+
+void setup() {
+  // put your setup code here, to run once:
+
+Serial.begin(9600);
+pinMode(11,OUTPUT);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+ddong=analogRead(gassensor);
+
+
+digitalWrite(11,LOW);
+delay(1000);
+ddong=analogRead(gassensor);
+Serial.println("껐을때");
+Serial.println(ddong);
+delay(1000);
+digitalWrite(11,HIGH);
+delay(1000);
+ddong=analogRead(gassensor);
+Serial.println("켰을때");
+Serial.println(ddong);
+delay(1000);
+}
+
+*/
+//블루노버젼
+float gassensor = A3;
+float ddong,ddong2; //똥값
+
+void setup() {
+  // put your setup code here, to run once:
+
+Serial.begin(115200);
+pinMode(3,OUTPUT);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+ddong=analogRead(gassensor);
+
+
+digitalWrite(3,HIGH);
+delay(1000);
+ddong=analogRead(gassensor);
+Serial.println("껐을때");
+Serial.println(ddong);
+delay(1000);
+digitalWrite(3,LOW);
+delay(1000);
+ddong=analogRead(gassensor);
+Serial.println("켰을때");
+Serial.println(ddong);
+delay(1000);
+}

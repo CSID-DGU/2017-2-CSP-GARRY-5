@@ -1,0 +1,116 @@
+#include <SoftwareSerial.h>
+//온습도 라이브러리 불러옴
+//온습도 핀이 연결된 아두이노의 핀번호
+int sensor = A2;
+int gas_value;
+
+// SoftwareSerial(RX, TX)
+SoftwareSerial BTSerial(0, 1); //기존에 2,3
+// 데이터를 수신 받을 버퍼
+byte buffer[1024];
+// 버퍼에 데이타를 저장할 때 기록할 위치
+int bufferPosition;
+
+int count = 0;            //평균값
+float a_sum = 0;  //평균값
+float average=0;
+unsigned long t =0;
+unsigned long pt=0;
+unsigned long ct=0;
+
+
+void setup()
+
+{
+  //pinMode(sensor,INPUT);
+  BTSerial.begin(9600);
+  Serial.begin(9600);
+  Serial.println("Hi");
+  pt=millis();
+}
+
+void loop()
+{
+  /*
+    //오줌 평균 k1,k2 비교
+    int a = analogRead(sensor);
+    if (count < 10){
+    a_sum = a_sum + a;
+    count++;
+    // Serial.print("count = ")
+    // Serial.println(count)
+    }
+    if (count == 10) {
+    k1 = a_sum/count;
+    count++;
+    Serial.print("k1 =  ");
+    Serial.println(k1);
+    }
+    if (count > 10 && count < 21){
+    a_sum = a_sum + a;
+    count++;
+    }
+    if (count==21){
+    k2 = (a_sum - (k1*10))/11;
+    count = 0;
+    a_sum = 0;
+    Serial.print("k2 =  ");
+    Serial.println(k2);
+    }
+
+
+    if (abs(k2 - k1) >20){
+    Serial.print("result =  ");
+    Serial.println("0");
+
+    }
+  */
+
+  ct=millis();
+//Serial.println(t);
+
+  int a = analogRead(sensor);
+
+  if (count == 10) {
+    average = a_sum / 10;
+   Serial.print("average : ");
+   Serial.println(average);
+    a_sum = 0;
+    count = 0;
+  }
+  else {
+    a_sum = a_sum + a;
+    count++;
+  }
+       if ( ((ct-pt)>10000) && ((a / (average)) > 2)) {  //ct-pt는 몇초마다 작동할 것인가 설정
+           Serial.println("number1");
+           Serial.print("peak value = ");
+           Serial.println(a);
+           pt=ct;
+         }
+
+  if (BTSerial.available())
+  {
+    // 수신 받은 데이터 저장
+    byte data = BTSerial.read();
+    // 수신된 데이터 시리얼 모니터로 출력
+    Serial.write(data);
+    BTSerial.write(data);
+
+    // 문자열 종료 표시
+    if (data == '\n') {
+      buffer[bufferPosition] = '\0';
+
+      // 스마트폰으로 문자열 전송
+      BTSerial.write(buffer, bufferPosition);
+      bufferPosition = 0;
+    }
+  }
+
+  /*gas_value=analogRead(sensor);
+    Serial.print("gas: ");
+    Serial.println(gas_value);
+    BTSerial.print("gas: ");
+    BTSerial.println(gas_value);*/
+  delay(300);
+}
