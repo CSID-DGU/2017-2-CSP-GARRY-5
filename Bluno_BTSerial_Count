@@ -1,0 +1,32 @@
+#include <SoftwareSerial.h>
+// SoftwareSerial(RX, TX)
+SoftwareSerial BTSerial(0, 1); //기존에 2,3
+int cj = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+
+  Serial.begin(115200);
+  BTSerial.begin(115200);
+  Serial.println("Hello");
+  BTSerial.println("Hi");
+}
+
+void loop() {
+
+  delay(2000);
+  //cj = cj + 1;
+  //Serial.println(cj);
+  BTSerial.println(cj);
+  cj++;
+
+  if (BTSerial.available()) {
+    Serial.write(BTSerial.read());
+  }
+  // Serial –> Data –> BT
+  if (Serial.available()) {
+    BTSerial.write(Serial.read());
+  }
+
+  delay(3000);
+}
