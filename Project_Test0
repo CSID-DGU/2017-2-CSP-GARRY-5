@@ -1,0 +1,56 @@
+#include <SoftwareSerial.h>
+#include <DHT11.h>    //온습도 라이브러리 불러옴
+int pin = A0;          //온습도 핀이 연결된 아두이노의 핀번호
+DHT11 dht11(pin);
+int sensor=A1;
+int gas_value;
+
+// SoftwareSerial(RX, TX)
+SoftwareSerial BTSerial(2, 3); 
+// 데이터를 수신 받을 버퍼
+byte buffer[1024];
+// 버퍼에 데이타를 저장할 때 기록할 위치
+int bufferPosition; 
+
+void setup()
+
+{
+pinMode(sensor,INPUT);
+BTSerial.begin(9600); 
+Serial.begin(9600);
+// 버퍼 위치 초기화
+bufferPosition = 0; 
+}
+
+void loop()
+{
+ float temp, humi;
+  dht11.read(humi,temp);
+  gas_value=analogRead(sensor);
+    Serial.print("temperature: ");
+    Serial.println(temp);
+    Serial.print("humidity: ");
+    Serial.println(humi);
+    Serial.print("gas: ");
+    Serial.println(gas_value);
+    delay(3000);
+
+      // 블루투스로 데이터 수신
+  if (BTSerial.available()) { 
+    // 수신 받은 데이터 저장
+    byte data = BTSerial.read(); 
+    // 수신된 데이터 시리얼 모니터로 출력
+    Serial.write(data); 
+    // 수신 받은 데이터를 버퍼에 저장
+    buffer[bufferPosition++] = data; 
+    
+    // 문자열 종료 표시
+    if (data == '\n') { 
+      buffer[bufferPosition] = '\0';
+      
+      // 스마트폰으로 문자열 전송
+      BTSerial.write(buffer, bufferPosition);
+      bufferPosition = 0;
+    }  
+  }
+}
